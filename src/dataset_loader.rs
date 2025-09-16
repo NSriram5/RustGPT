@@ -6,7 +6,6 @@ pub struct Dataset {
 pub enum DatasetType {
     JSON,
     CSV,
-    
 }
 
 impl Dataset {
