@@ -195,13 +195,13 @@ fn main() {
     
     println!("\n=== PRE-TRAINING MODEL ===");
     println!("Pre-training on {} examples for {} epochs with learning rate {}", 
-             pretraining_data.len(), 100, 0.0005);
-    llm.train(pretraining_data, 100, 0.0005);
+             pretraining_data.len(), 2, 0.0005);
+    llm.train(pretraining_data, 2, 0.0005);
     
     println!("\n=== INSTRUCTION TUNING ===");
     println!("Instruction tuning on {} examples for {} epochs with learning rate {}", 
-             chat_training_data.len(), 100, 0.0001);
-    llm.train(chat_training_data, 100, 0.0001); // Much lower learning rate for stability
+             chat_training_data.len(), 2, 0.0001);
+    llm.train(chat_training_data, 2, 0.0001); // Much lower learning rate for stability
     
     println!("\n=== AFTER TRAINING ===");
     println!("Input: {}", string);
