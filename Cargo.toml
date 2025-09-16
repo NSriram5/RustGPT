@@ -1,6 +1,7 @@
 [package]
 name = "llm"
 version = "0.1.0"
+# 2024 = latest edition
 edition = "2024"
 
 [dependencies]
