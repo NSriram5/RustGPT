@@ -174,15 +174,15 @@ fn main() {
     let vocab = Vocab::new(vocab_words_refs);
 
     let transformer_block_1 = TransformerBlock::new(EMBEDDING_DIM, HIDDEN_DIM);
-    let transformer_block_2 = TransformerBlock::new(EMBEDDING_DIM, HIDDEN_DIM);
-    let transformer_block_3 = TransformerBlock::new(EMBEDDING_DIM, HIDDEN_DIM);
+    // let transformer_block_2 = TransformerBlock::new(EMBEDDING_DIM, HIDDEN_DIM);
+    // let transformer_block_3 = TransformerBlock::new(EMBEDDING_DIM, HIDDEN_DIM);
     let output_projection = OutputProjection::new(EMBEDDING_DIM, vocab.words.len());
     let embeddings = Embeddings::new(vocab.clone());
     let mut llm = LLM::new(vocab, vec![
         Box::new(embeddings),
         Box::new(transformer_block_1),
-        Box::new(transformer_block_2),
-        Box::new(transformer_block_3),
+        // Box::new(transformer_block_2),
+        // Box::new(transformer_block_3),
         Box::new(output_projection),
     ]);
 
@@ -195,13 +195,13 @@ fn main() {
     
     println!("\n=== PRE-TRAINING MODEL ===");
     println!("Pre-training on {} examples for {} epochs with learning rate {}", 
-             pretraining_data.len(), 2, 0.0005);
-    llm.train(pretraining_data, 2, 0.0005);
+             pretraining_data.len(), 100, 0.0005);
+    llm.train(pretraining_data, 100, 0.0005);
     
     println!("\n=== INSTRUCTION TUNING ===");
     println!("Instruction tuning on {} examples for {} epochs with learning rate {}", 
-             chat_training_data.len(), 2, 0.0001);
-    llm.train(chat_training_data, 2, 0.0001); // Much lower learning rate for stability
+             chat_training_data.len(), 100, 0.0001);
+    llm.train(chat_training_data, 100, 0.0001); // Much lower learning rate for stability
     
     println!("\n=== AFTER TRAINING ===");
     println!("Input: {}", string);
