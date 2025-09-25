@@ -1,12 +1,7 @@
 use ndarray::Array1;
 use ndarray::{Array2, Axis};
 use crate::transformer::TransformerBlock;
-use crate::Embeddings;
-use crate::Vocab;
-use crate::output_projection::OutputProjection;
-use crate::EMBEDDING_DIM;
-use crate::HIDDEN_DIM;
-use crate::MAX_SEQ_LEN;
+use crate::{output_projection::OutputProjection, Embeddings, Vocab, EMBEDDING_DIM, HIDDEN_DIM, MAX_SEQ_LEN};
 use std::cmp::Ordering;
 pub trait Layer {
     fn layer_type(&self) -> &str;

@@ -1,6 +1,8 @@
-use std::io::Write;
+use core::num;
+use std::{env::{self, Args}, io::Write};
 
 use embeddings::Embeddings;
+use ::llm::{EMBEDDING_DIM, HIDDEN_DIM, MAX_SEQ_LEN};
 use output_projection::OutputProjection;
 use transformer::TransformerBlock;
 use llm::LLM;
@@ -17,12 +19,25 @@ mod output_projection;
 mod adam;
 mod layer_norm;
 
-// Use the constants from lib.rs
-const MAX_SEQ_LEN: usize = 80;
-const EMBEDDING_DIM: usize = 128;
-const HIDDEN_DIM: usize = 256;
+const NUM_EPOCHS: usize = 100;
+const LR: f32 = 0.0005;
 
 fn main() {
+    let mut args: Args = env::args();
+
+    args.next();
+
+    let num_epochs = args.next();
+
+    let num_epochs = num_epochs
+        .map(|str| str.parse().unwrap_or(NUM_EPOCHS));
+
+    let num_epochs = num_epochs.unwrap_or(NUM_EPOCHS);
+
+    let lr = args.next()
+        .map(|x| x.parse().unwrap_or(LR))
+        .unwrap_or(LR);
+    
     // Mock input - test conversational format
     let string = String::from("User: How do mountains form?");
 
@@ -112,13 +127,21 @@ fn main() {
     
     println!("\n=== PRE-TRAINING MODEL ===");
     println!("Pre-training on {} examples for {} epochs with learning rate {}", 
-             dataset.pretraining_data.len(), 100, 0.0005);
-    llm.train(dataset.pretraining_data.iter().map(|s| s.as_str()).collect::<Vec<&str>>(), 100, 0.0005);
+             dataset.pretraining_data.len(), num_epochs, lr);
+    llm.train(
+        dataset.pretraining_data.iter().map(|s| s.as_str()).collect::<Vec<&str>>(),
+        num_epochs,
+        lr
+    );
     
     println!("\n=== INSTRUCTION TUNING ===");
     println!("Instruction tuning on {} examples for {} epochs with learning rate {}", 
-             dataset.chat_training_data.len(), 100, 0.0001);
-    llm.train(dataset.chat_training_data.iter().map(|s| s.as_str()).collect::<Vec<&str>>(), 100, 0.0001); // Much lower learning rate for stability
+             dataset.chat_training_data.len(), num_epochs, lr / 5.0);
+    llm.train(
+        dataset.chat_training_data.iter().map(|s| s.as_str()).collect::<Vec<&str>>(),
+        num_epochs, 
+        lr / 5.0
+    ); // Much lower learning rate for stability
     
     println!("\n=== AFTER TRAINING ===");
     println!("Input: {}", string);
